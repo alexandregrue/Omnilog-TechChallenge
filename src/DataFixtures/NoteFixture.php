@@ -18,8 +18,6 @@ class NoteFixture extends Fixture
             $note
                 ->setTitle('Note '.$i)
                 ->setText('Text for note '.$i)
-                ->setStartDate(new \DateTime('2019-01-01'))
-                ->setEndDate(new \DateTime('2021-11-30'))
             ;
 
             $manager->persist($note);

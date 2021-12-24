@@ -11,9 +11,6 @@
                 <th>Id</th>
                 <th>Title</th>
                 <th>Text</th>
-                <th>Début</th>
-                <th>Fin</th>
-                <th>Documents</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -23,9 +20,6 @@
                 <td>{{ note.id }}</td>
                 <td>{{ note.title }}</td>
                 <td>{{ note.text }}</td>
-                <td>{{ note.startDate ? note.startDate|date('d-m-Y') : '' }}</td>
-                <td>{{ note.endDate ? note.endDate|date('d-m-Y') : '' }}</td>
-                <td>{{ note.documents.count }}</td>
                 <td>
                     <a href="{{ path('note_show', {'id': note.id}) }}" class="btn btn-primary">show</a>
                     <a href="{{ path('note_edit', {'id': note.id}) }}" class="btn btn-primary">edit</a>
