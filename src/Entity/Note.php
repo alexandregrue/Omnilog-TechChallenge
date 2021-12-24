@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\NoteRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=NoteRepository::class)
@@ -23,28 +25,43 @@ class Note
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(
+     *    message="Le nom ne peut pas être vide.")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "Le nom doit contenir au moins {{ limit }} caractères.",
+     *      maxMessage = "Le nom doit contenir moins de {{ limit }} caractères.")
      */
     private string $title;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(
+     *    message="La description ne peut pas être vide.")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "La description doit contenir au moins {{ limit }} caractères.",
+     *      maxMessage = "La description contenir moins de {{ limit }} caractères.")
      */
     private string $text;
 
     /**
      * @ORM\Column(type="date")
+     * 
      */
-    private $startDate;
+    private DateTimeInterface $startDate;
 
     /**
      * @ORM\Column(type="date")
      */
-    private $endDate;
+    private DateTimeInterface $endDate;
 
     /**
      * @ORM\OneToMany(targetEntity=Document::class, mappedBy="note", orphanRemoval=true, cascade={"persist"})
      */
-    private $documents;
+    private Collection $documents;
 
     public function __construct()
     {
