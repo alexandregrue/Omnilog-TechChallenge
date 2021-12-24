@@ -115,6 +115,15 @@ class NoteController extends AbstractController
     public function delete(Request $request, Note $note): Response
     {
         if ($this->isCsrfTokenValid('delete'.$note->getId(), (string) $request->request->get('_token'))) {
+            $documents = $note->getDocuments();
+            if ($documents) {
+                foreach ($documents as $document) {
+                    $file = $this->getParameter('documents_directory') . '/' . $document->getName();
+                    if (file_exists($file)) {
+                        unlink($file);
+                    }
+                }
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($note);
             $entityManager->flush();
