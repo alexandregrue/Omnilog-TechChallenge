@@ -8,6 +8,7 @@ use App\Entity\Document;
 use App\Entity\Note;
 use App\Form\NoteType;
 use App\Repository\NoteRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,10 +19,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class NoteController extends AbstractController
 {
     #[Route('/', name: 'note_index', methods: ['GET'])]
-    public function index(NoteRepository $noteRepository): Response
+    public function index(Request $request, NoteRepository $noteRepository, PaginatorInterface $paginator): Response
     {
+        $notes = $noteRepository->findAll();
+        $notes = $paginator->paginate(
+            $notes,
+            $request->query->getInt('page', 1),
+            10
+        );
+        
         return $this->render('note/index.html.twig', [
-            'notes' => $noteRepository->findAll(),
+            'notes' => $notes,
         ]);
     }
 
