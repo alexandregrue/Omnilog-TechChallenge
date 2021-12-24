@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Note;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,6 +17,14 @@ class NoteType extends AbstractType
         $builder
             ->add('title')
             ->add('text')
+            ->add('startDate')
+            ->add('endDate')
+            ->add('documents', FileType::class, [
+                'label' => 'Documents',
+                'multiple' => true,
+                'mapped' => false,
+                'required' => false,
+            ])
         ;
     }
 

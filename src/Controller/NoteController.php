@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Document;
 use App\Entity\Note;
 use App\Form\NoteType;
 use App\Repository\NoteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,6 +33,22 @@ class NoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Collect the documents
+            $documents = $form->get('documents')->getData();
+            foreach ($documents as $document) {
+                // Generate new name
+                $file = md5(uniqid()) . '.' . $document->guessExtension();
+                // Move the file to the directory
+                $document->move(
+                    $this->getParameter('documents_directory'),
+                    $file
+                );
+                // Store the document name in the database
+                $doc = new Document();
+                $doc->setName($file);
+                $note->addDocument($doc);
+            }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($note);
             $entityManager->flush();
@@ -59,6 +77,21 @@ class NoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Collect the documents
+            $documents = $form->get('documents')->getData();
+            foreach ($documents as $document) {
+                // Generate new name
+                $file = md5(uniqid()) . '.' . $document->guessExtension();
+                // Move the file to the directory
+                $document->move(
+                    $this->getParameter('documents_directory'),
+                    $file
+                );
+                // Store the document name in the database
+                $doc = new Document();
+                $doc->setName($file);
+                $note->addDocument($doc);
+            }
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('note_index', [], Response::HTTP_SEE_OTHER);
@@ -80,5 +113,24 @@ class NoteController extends AbstractController
         }
 
         return $this->redirectToRoute('note_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/delete/document/{id}', name: 'note_delete_document', methods: ['DELETE'])]
+    public function deleteDocument(Document $document, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        // Check if token is valid
+        if ($this->isCsrfTokenValid('delete' . $document->getId(), $data['_token'])) {
+            $name = $document->getName();
+            // Delete the document
+            unlink($this->getParameter('documents_directory') . '/' . $name);
+            // Remove the entry from the database
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($document);
+            $entityManager->flush();
+            return new JsonResponse(['success' => true]);
+        } else {
+            return new JsonResponse(['error' => 'Invalid Token'], 400);
+        }
     }
 }
