@@ -19,6 +19,14 @@
                 <th>Text</th>
                 <td>{{ note.text }}</td>
             </tr>
+            <tr>
+                <th>Début</th>
+                <td>{{ note.startDate ? note.startDate|date('d-m-Y') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Fin</th>
+                <td>{{ note.endDate ? note.endDate|date('d-m-Y') : '' }}</td>
+            </tr>
         </tbody>
     </table>
 
@@ -27,4 +35,12 @@
     <a href="{{ path('note_edit', {'id': note.id}) }}" class="btn btn-primary">edit</a>
 
     {{ include('note/_delete_form.html.twig') }}
+
+    <h2>Document :</h2>
+
+    {% for document in note.documents %}
+    <div>
+        <img src="{{ asset('/uploads/' ~ document.name) }}" alt="Document">
+    </div>
+    {% endfor %}
 {% endblock %}
