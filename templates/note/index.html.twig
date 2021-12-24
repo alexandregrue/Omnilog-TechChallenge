@@ -38,6 +38,7 @@
         {% endfor %}
         </tbody>
     </table>
+    {{ knp_pagination_render(notes) }}
 
     <a href="{{ path('note_new') }}">Create new</a>
 {% endblock %}
