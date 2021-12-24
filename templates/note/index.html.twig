@@ -3,6 +3,10 @@
 {% block title %}Note index{% endblock %}
 
 {% block body %}
+    {% if app.user %}
+        <a href="{{ path('app_logout') }}"> Se déconnecter</a>
+    {% endif %}
+
     <h1>Note index</h1>
 
     <table class="table">
