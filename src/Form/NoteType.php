@@ -20,25 +20,32 @@ class NoteType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Nom',
+                'label' => 'Nom :',
+                'attr' => [
+                    'placeholder' => 'Nom du projet',
+                ],
+                
             ])
             ->add('text', TextType::class, [
-                'label' => 'Description',
+                'label' => 'Description :',
+                'attr' => [
+                    'placeholder' => 'Description du projet',
+                ],
             ])
             ->add('startDate', DateType::class, [
-                'label' => 'Début',
+                'label' => 'Début :',
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
                 'invalid_message' => 'La date doit être sous la forme JJ/MM/AAAA',
             ])
             ->add('endDate', DateType::class, [
-                'label' => 'Fin',
+                'label' => 'Fin :',
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
                 'invalid_message' => 'La date doit être sous la forme JJ/MM/AAAA',
             ])
             ->add('documents', FileType::class, [
-                'label' => 'Documents',
+                'label' => 'Documents :',
                 'multiple' => true,
                 'mapped' => false,
                 'required' => false,
