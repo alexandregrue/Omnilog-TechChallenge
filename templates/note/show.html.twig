@@ -35,7 +35,15 @@
 
         {% for document in note.documents %}
         <div class="documents">
-            <img src="{{ asset('/uploads/' ~ document.name) }}" alt="Document">
+            {% if 'pdf' in document.name %}
+            <object type="application/pdf" data="{{ asset('/uploads/' ~ document.name) }}" width="100%" height="500px">
+            </object>
+
+                {% else %}
+                    <img src="{{ asset('/uploads/' ~ document.name) }}" alt="Document">
+                    
+            {% endif %}
+            
         </div>
         {% endfor %}
     </div>
