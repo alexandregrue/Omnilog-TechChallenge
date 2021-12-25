@@ -1,24 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Note{% endblock %}
+{% block title %}Edition d'un projet{% endblock %}
 {% block javascripts %}<script src="{{ asset('js/documents.js') }}"></script>{% endblock %}
 {% block body %}
-    <h1>Edit Note</h1>
+    <div class="edit_project">
+        <h1>Edition d'un projet</h1>
 
-    {{ include('note/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ include('note/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('note_index') }}" class="btn btn-secondary">back to list</a>
+        <a href="{{ path('note_index') }}" class="btn btn-secondary">Retour à la liste</a>
 
-    {{ include('note/_delete_form.html.twig') }}
+        {{ include('note/_delete_form.html.twig') }}
 
-    <h2>Document :</h2>
+        <h2>Document :</h2>
 
-    {% for document in note.documents %}
-    <div>
-        <img src="{{ asset('/uploads/' ~ document.name) }}" alt="Document">
-        <a href="{{ path('note_delete_document', {id: document.id}) }}" data-delete
-            data-token={{ csrf_token('delete' ~ document.id)}}>Supprimer</a>
+        {% for document in note.documents %}
+        <div class="documents">
+            <img src="{{ asset('/uploads/' ~ document.name) }}" alt="Document">
+            <a href="{{ path('note_delete_document', {id: document.id}) }}" data-delete
+                data-token={{ csrf_token('delete' ~ document.id)}}>Supprimer</a>
+        </div>
+
+        {% endfor %}
     </div>
-
-    {% endfor %}
 {% endblock %}
