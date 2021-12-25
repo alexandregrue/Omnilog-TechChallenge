@@ -24,7 +24,7 @@ class NoteController extends AbstractController
     #[Route('/', name: 'note_index', methods: ['GET'])]
     public function index(Request $request, NoteRepository $noteRepository, PaginatorInterface $paginator): Response
     {
-        $notes = $noteRepository->findAll();
+        $notes = $noteRepository->findBy([], ['id' => 'DESC']);
         $notes = $paginator->paginate(
             $notes,
             $request->query->getInt('page', 1),
