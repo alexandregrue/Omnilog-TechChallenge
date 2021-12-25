@@ -8,20 +8,31 @@ use App\Entity\Document;
 use App\Entity\Note;
 use App\Form\NoteType;
 use App\Repository\NoteRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 #[Route('/')]
+#[IsGranted('ROLE_ADMIN')]
 class NoteController extends AbstractController
 {
     #[Route('/', name: 'note_index', methods: ['GET'])]
-    public function index(NoteRepository $noteRepository): Response
+    public function index(Request $request, NoteRepository $noteRepository, PaginatorInterface $paginator): Response
     {
+        $notes = $noteRepository->findBy([], ['id' => 'DESC']);
+        $notes = $paginator->paginate(
+            $notes,
+            $request->query->getInt('page', 1),
+            10
+        );
+        
         return $this->render('note/index.html.twig', [
-            'notes' => $noteRepository->findAll(),
+            'notes' => $notes,
         ]);
     }
 
@@ -62,7 +73,7 @@ class NoteController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'note_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'note_show', requirements: ['id' => '\d+'] , methods: ['GET'])]
     public function show(Note $note): Response
     {
         return $this->render('note/show.html.twig', [
@@ -70,7 +81,7 @@ class NoteController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'note_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'note_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Note $note): Response
     {
         $form = $this->createForm(NoteType::class, $note);
@@ -103,10 +114,19 @@ class NoteController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'note_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'note_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(Request $request, Note $note): Response
     {
         if ($this->isCsrfTokenValid('delete'.$note->getId(), (string) $request->request->get('_token'))) {
+            $documents = $note->getDocuments();
+            if ($documents) {
+                foreach ($documents as $document) {
+                    $file = $this->getParameter('documents_directory') . '/' . $document->getName();
+                    if (file_exists($file)) {
+                        unlink($file);
+                    }
+                }
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($note);
             $entityManager->flush();
@@ -115,7 +135,7 @@ class NoteController extends AbstractController
         return $this->redirectToRoute('note_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/delete/document/{id}', name: 'note_delete_document', methods: ['DELETE'])]
+    #[Route('/delete/document/{id}', name: 'note_delete_document', requirements: ['id' => '\d+'], methods: ['DELETE'])]
     public function deleteDocument(Document $document, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

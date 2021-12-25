@@ -3,32 +3,35 @@
 {% block title %}Note index{% endblock %}
 
 {% block body %}
-    <h1>Note index</h1>
-
+<div class="note_list">
+    <header>
+        <h1>Projets :</h1>
+       {% if app.user %}
+       <a href="{{ path('app_logout') }}"> Se déconnecter</a>
+       {% endif %}
+    </header>
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Text</th>
+                <th>Nom</th>
+                <th>Description</th>
                 <th>Début</th>
                 <th>Fin</th>
                 <th>Documents</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for note in notes %}
             <tr>
-                <td>{{ note.id }}</td>
                 <td>{{ note.title }}</td>
                 <td>{{ note.text }}</td>
                 <td>{{ note.startDate ? note.startDate|date('d-m-Y') : '' }}</td>
                 <td>{{ note.endDate ? note.endDate|date('d-m-Y') : '' }}</td>
                 <td>{{ note.documents.count }}</td>
-                <td>
-                    <a href="{{ path('note_show', {'id': note.id}) }}" class="btn btn-primary">show</a>
-                    <a href="{{ path('note_edit', {'id': note.id}) }}" class="btn btn-primary">edit</a>
+                <td class="actions">
+                    <a href="{{ path('note_show', {'id': note.id}) }}">Voir</a>
+                    <a href="{{ path('note_edit', {'id': note.id}) }}">Editer</a>
                 </td>
             </tr>
         {% else %}
@@ -38,6 +41,10 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('note_new') }}">Create new</a>
+    <div class="new_project">
+        <a href="{{ path('note_new') }}">+ Nouveau Projet</a>
+    </div>
+    
+    {{ knp_pagination_render(notes) }}
+</div>
 {% endblock %}
