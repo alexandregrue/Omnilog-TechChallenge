@@ -24,7 +24,7 @@ class NoteType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Nom du projet',
                 ],
-                
+
             ])
             ->add('text', TextType::class, [
                 'label' => 'Description :',
@@ -65,8 +65,7 @@ class NoteType extends AbstractType
                         ]),
                     ]),
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
