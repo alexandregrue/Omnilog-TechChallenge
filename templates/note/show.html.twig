@@ -1,50 +1,44 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Les projets{% endblock %}
-
-{% block body %}
-{% set difference = date(note.endDate).diff(date(note.startDate)) %}
-{% set leftDays = difference.days %}
-    <div class="show">
-        <h1>{{ note.title }}</h1>
-        <div class="note_information">
-            <div class="description">
-                <p>Description : {{ note.text }}</p>
-            </div>
-            <div class="start_date">
-                <p>Début : {{ note.startDate ? note.startDate|date('d-m-Y') : '' }}</p>
-            </div>
-            <div class="nb_of_days">
-                <p>Nb de jours : {{ leftDays }}</p>
-            </div>
-            <div class="end_date">
-                <p>Fin : {{ note.endDate ? note.endDate|date('d-m-Y') : '' }}</p>
-            </div>
+{% extends 'base.html.twig' %} {% block title %}Les projets{% endblock %} {%
+block body %} {% set difference = date(note.endDate).diff(date(note.startDate))
+%} {% set leftDays = difference.days %}
+<div class="show">
+    <h1>{{ note.title }}</h1>
+    <div class="note_information">
+        <div class="description">
+            <p>Description : {{ note.text }}</p>
         </div>
-        <div class="edit_button">
-            <a href="{{ path('note_edit', {'id': note.id}) }}" class="btn btn-primary">Editer</a>
+        <div class="start_date">
+            <p>
+                Début : {{ note.startDate ? note.startDate|date('d-m-Y') : '' }}
+            </p>
         </div>
-        
-        <a href="{{ path('note_index') }}" class="btn btn-secondary">Retour à la liste</a>
-
-        
-
-        {{ include('note/_delete_form.html.twig') }}
-
-        <h2>Document :</h2>
-
-        {% for document in note.documents %}
-        <div class="documents">
-            {% if 'pdf' in document.name %}
-            <object type="application/pdf" data="{{ asset('/uploads/' ~ document.name) }}" width="100%" height="500px">
-            </object>
-
-                {% else %}
-                    <img src="{{ asset('/uploads/' ~ document.name) }}" alt="Document">
-                    
-            {% endif %}
-            
+        <div class="nb_of_days">
+            <p>Nb de jours : {{ leftDays }}</p>
         </div>
-        {% endfor %}
+        <div class="end_date">
+            <p>Fin : {{ note.endDate ? note.endDate|date('d-m-Y') : '' }}</p>
+        </div>
     </div>
+    <div class="edit_button">
+        <a href="{{ path('note_edit', { id: note.id }) }}" class="btn btn-primary">Editer</a>
+    </div>
+
+    <a href="{{ path('note_index') }}" class="btn btn-secondary">Retour à la liste</a>
+
+    {{ include("note/_delete_form.html.twig") }}
+
+    <h2>Document :</h2>
+
+    {% for document in note.documents %}
+    <div class="documents">
+        {% if 'pdf' in document.name %}
+        <object type="application/pdf" data="{{ asset('/uploads/' ~ document.name) }}"></object>
+
+        {% else %}
+        <img src="{{ asset('/uploads/' ~ document.name) }}" alt="Document" />
+
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}
