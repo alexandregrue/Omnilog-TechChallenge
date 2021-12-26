@@ -30,7 +30,7 @@ class NoteController extends AbstractController
             $request->query->getInt('page', 1),
             10
         );
-        
+
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
         ]);
@@ -73,9 +73,10 @@ class NoteController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'note_show', requirements: ['id' => '\d+'] , methods: ['GET'])]
+    #[Route('/{id}', name: 'note_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Note $note): Response
     {
+
         return $this->render('note/show.html.twig', [
             'note' => $note,
         ]);
@@ -117,7 +118,7 @@ class NoteController extends AbstractController
     #[Route('/{id}', name: 'note_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(Request $request, Note $note): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$note->getId(), (string) $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $note->getId(), (string) $request->request->get('_token'))) {
             $documents = $note->getDocuments();
             if ($documents) {
                 foreach ($documents as $document) {

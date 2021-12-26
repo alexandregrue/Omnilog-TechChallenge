@@ -15,13 +15,13 @@ class UserFixtures extends Fixture
     {
         $this->passwordHasher = $passwordHasher;
     }
-    
+
     public function load(ObjectManager $manager)
     {
         $admin = new User();
         $admin->setEmail('maxime_the_best_rh@omnilog.fr');
         $admin->setRoles(['ROLE_ADMIN']);
-        $hashedPassword= $this->passwordHasher->hashPassword(
+        $hashedPassword = $this->passwordHasher->hashPassword(
             $admin,
             'verybadpassword'
         );
